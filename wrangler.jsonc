@@ -1,0 +1,10 @@
+{
+  "name": "mythix-lists",
+  "main": "worker.js",
+  "compatibility_date": "2025-11-01",
+  "workers_dev": true,
+  "keep_vars": true,
+  "kv_namespaces": [
+    { "binding": "LISTS" }
+  ]
+}
