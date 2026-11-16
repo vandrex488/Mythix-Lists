@@ -97,7 +97,8 @@ const HTML=[
 "tyle=\"color:var(--mu);font-size:14px\">Forgot password?</a> \u00b7 <a href=\"#\" id=\"gl\" style=\"co",
 "lor:var(--mu);font-size:14px\">Owner login</a></p></div></div>\n<div id=\"tb\"><div style=\"bac",
 "kground:var(--card);border:1px solid var(--ac);border-radius:18px;padding:26px;max-width:4",
-"00px;width:100%;text-align:center\"><h2 id=\"tbh\" style=\"margin-top:0\">Timed out</h2><p id=\"","tbt\" style=\"color:var(--mu)\"></p><button id=\"tbl\">Log out</button></div></div>\n<div id=\"rv",
+"00px;width:100%;text-align:center\"><h2 id=\"tbh\" style=\"margin-top:0\">Timed out</h2><p id=\"",
+"tbt\" style=\"color:var(--mu)\"></p><button id=\"tbl\">Log out</button></div></div>\n<div id=\"rv",
 "\"><div style=\"background:var(--card);border:1px solid var(--ac);border-radius:18px;padding",
 ":26px;max-width:400px;width:100%;text-align:center\"><h2 style=\"margin-top:0\">Reset passwor",
 "d</h2><p style=\"color:var(--mu);margin-top:0\">Enter your name, the recovery code you saved",
@@ -160,117 +161,119 @@ const HTML=[
 "OK=false;role='';if(sess){sess='';try{localStorage.removeItem('sess')}catch(e){}}showAdmin",
 "();gate();return}\n    if(r.error){$('#gt').classList.add('on');$('#ae').textContent=r.erro",
 "r;return}\n    banUntil=0;visName=r.name;visOK=true;role=r.mod?'mod':'';showAdmin()\n  }else",
-" if(r.error){toast(r.error);return}\n  L=r;gate();render()}\nconst fmtT=ms=>{let s=Math.max(",
-"0,Math.ceil(ms/1000));const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3",
-"600;const m=Math.floor(s/60);s%=60;return(d?d+'d ':'')+(h||d?h+'h ':'')+(m||h||d?m+'m ':'')",
-"+s+'s'};\nfunction banTick(){clearInterval(bti);if(!banUntil)return;const upd=()=>{if(banU",
-"ntil===-1){$('#tbh').textContent='Banned';$('#tbt').textContent='You have been permanently",
-" banned from this site.';return}const left=banUntil-Date.now();if(left<=0){clearInterval(b",
-"ti);banUntil=0;load();return}$('#tbh').textContent='Timed out';$('#tbt').textContent='You ",
-"are timed out. Time left: '+fmtT(left)};upd();if(banUntil!==-1)bti=setInterval(upd,1000)}\n",
-"function gate(){const need=!(role||visOK);if(!need)$('#ae').textContent='';$('#gt').classL",
-"ist.toggle('on',need&&!banUntil);$('#tb').classList.toggle('on',!!banUntil);banTick();$('m",
-"ain').classList.toggle('lock',need);$('#lo').hidden=!(role||visOK);$('#who').textContent=r",
-"ole==='owner'?'Owner':role==='mod'?'\ud83d\udee1\ufe0f '+visName+' (mod)':(visOK?'\ud83d\udc64 '+visName:'')}\nasync f",
-"unction copyText(t,label){\n  try{await navigator.clipboard.writeText(t);toast('Copied '+la",
-"bel);return}catch(e){}\n  try{const a=document.createElement('textarea');a.value=t;a.style.",
-"cssText='position:fixed;top:0;left:0;opacity:0';document.body.append(a);a.focus();a.select",
-"();a.setSelectionRange(0,t.length);const ok=document.execCommand('copy');a.remove();toast(",
-"ok?'Copied '+label:\"Couldn't copy. Press and hold the text instead.\")}catch(e){toast(\"Coul",
-"dn't copy\")}\n}\nfunction render(){\n  const box=$('#list');box.innerHTML='';\n  const arr=L[c",
-"ur]||[],map=new Map(arr.map(e=>[e.pos,e]));let items;\n  if(q){const s=q.toLowerCase();item",
-"s=arr.filter(e=>(e.name+e.id+e.creator).toLowerCase().includes(s)).map(e=>e.pos);$('#pager",
-"').hidden=true}\n  else{$('#pager').hidden=false;const a=pg*PER+1;items=Array.from({length:",
-"Math.min(PER,MAX-pg*PER)},(_,i)=>a+i);$('#pi').textContent=a+'\u2013'+(a+items.length-1)+' of '",
-"+MAX}\n  if(q&&!items.length)box.append(el('p','','No matches.'));\n  for(const n of items){",
-"\n    const e=map.get(n),r=el('div','row'+(e?'':' e'));r.append(el('b','','#'+n));\n    cons",
-"t i=el('div','i');\n    if(e){i.append(el('div','',e.name));i.append(el('small','','ID '+e.",
-"id+' \u00b7 by '+(e.creator||'?')))}else i.append(el('small','','empty slot'));\n    r.append(i)",
-";\n    if(e){const c=el('div');c.style.cssText='display:flex;gap:6px;flex-basis:100%;paddin",
-"g-left:82px;flex-wrap:wrap';\n      [['Copy ID',e.id,'ID'],['Copy name',e.name,'name'],['Co",
-"py creator',e.creator,'creator']].forEach(([t,v,l])=>{if(!v)return;const b=el('button','',",
-"t);b.style.cssText='padding:5px 11px;font-size:13px;color:var(--mu)';b.onclick=()=>copyTex",
-"t(v,l);c.append(b)});\n      if(e.id){const cb=el('button','','\ud83d\udcac Comment');cb.style.cssText",
-"='padding:5px 11px;font-size:13px;color:var(--ac)';cb.onclick=()=>openC(e);c.append(cb)}\n ",
-"     r.append(c)}\n    if(role==='owner'){const g=el('div');g.style.cssText='display:flex;g",
-"ap:6px;flex-basis:100%;padding-left:82px';\n      const mk=(t,fn,ti)=>{const b=el('button',",
-"'',t);b.title=ti||'';b.style.padding='6px 14px';b.onclick=()=>fn(b);g.append(b)};\n      if",
-"(e){mk('\u25b2',()=>n>1&&act({action:'move',list:cur,from:n,to:n-1}),'Swap with level above');m",
-"k('\u25bc',()=>n<MAX&&act({action:'move',list:cur,from:n,to:n+1}),'Swap with level below');mk('","\u21e7',()=>n>1&&act({action:'pull',list:cur,pos:n}),'Pull up (levels under it come with it)');",
-"mk('\u21e9',()=>act({action:'push',list:cur,pos:n}),'Push down (levels under it get pushed down",
-" too)')}\n      mk('\u270e',()=>edit(n,e));\n      if(e)mk('\u2715',b=>{if(b.dataset.a)act({action:'re",
-"move',list:cur,pos:n});else{b.dataset.a=1;b.textContent='Sure?';setTimeout(()=>{delete b.d",
-"ataset.a;b.textContent='\u2715'},3000)}});\n      r.append(g)}\n    box.append(r);\n  }\n}\ndocument",
-".querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{cur=b.dataset.l;pg=0;document.",
-"querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));render()});\n$(",
-"'#q').oninput=e=>{q=e.target.value.trim();render()};\n$('#pv').onclick=()=>{if(pg>0){pg--;r",
-"ender()}};\n$('#nx').onclick=()=>{if((pg+1)*PER<MAX){pg++;render()}};\n\nfunction showAdmin()",
-"{const o=role==='owner',m=o||role==='mod';$('#lg').hidden=m;$('#vs').hidden=!m;$('#va').hi",
-"dden=!o;$('#bk').hidden=!o;$('#vm').hidden=!o;$('#vu').hidden=!o;$('#vt').hidden=!m;$('#lo",
-"').hidden=!(m||visOK);render()}\n$('#lg').onclick=()=>{$('#lv').classList.add('on');$('#lp'",
-").value='';$('#lp').focus()};\n$('#lc').onclick=()=>$('#lv').classList.remove('on');\n$('#lg",
-"o').onclick=async()=>{const p=$('#lp').value;if(!p)return;pw=p;usr='';const r=await api('l",
-"ogin',{method:'POST'});\n  if(r.ok){role=r.role;try{sessionStorage.setItem('pw',pw);session",
-"Storage.setItem('usr',usr)}catch(e){}shut('#lv');showAdmin();load();toast('Logged in as '+",
-"r.name)}else{pw='';usr='';toast(r.error||'Login failed')}};\n$('#lp').onkeydown=e=>{if(e.ke",
-"y==='Enter')$('#lgo').click()};\n$('#lo').onclick=()=>{pw='';usr='';role='';sess='';try{ses",
-"sionStorage.removeItem('pw');sessionStorage.removeItem('usr');localStorage.removeItem('ses",
-"s')}catch(e){}showAdmin();load()};\nasync function act(b){const r=await post('admin',b);if(",
-"r.error){toast(r.error);return false}if(r.list){L[b.list]=r.list;render()}if(r.subs)drawSu",
-"bs(r.subs);if(r.approved)drawApproved(r.approved);if(r.mods)drawMods(r.mods);if(r.users)dr",
-"awUsers(r.users);if(r.timeouts)drawTimeouts(r.timeouts);if(r.removed){SUBS=SUBS.filter(x=>",
-"x.id!==r.removed);drawSubs(SUBS)}if(r.removedA){ASUBS=ASUBS.filter(x=>x.id!==r.removedA);d",
-"rawApproved(ASUBS)}return true}\nconst shut=i=>$(i).classList.remove('on');\n$('#bs').onclic",
-"k=async()=>{if(await act({action:'set',list:ecur,pos:$('#sp').value,id:$('#sid').value,nam",
-"e:$('#sn').value,creator:$('#sc').value}))shut('#ed')};\nlet rc=0;$('#br').onclick=async()=",
-">{const b=$('#br');if(!rc){rc=1;b.textContent='Tap again to confirm';setTimeout(()=>{rc=0;",
-"b.textContent='Remove'},3000);return}rc=0;b.textContent='Remove';if(await act({action:'rem",
-"ove',list:ecur,pos:$('#sp').value}))shut('#ed')};\n$('#bm').onclick=async()=>{if(!efrom){to",
-"ast('Open a filled slot to move it');return}if(await act({action:'move',list:ecur,from:efr",
-"om,to:$('#mt').value}))shut('#ed')};\n$('#ec').onclick=()=>shut('#ed');\n$('#sbtn').onclick=",
-"()=>$('#fm').classList.add('on');$('#fc').onclick=()=>shut('#fm');\n$('#vs').onclick=()=>{$",
-"('#sm').classList.add('on');loadSubs()};$('#smc').onclick=()=>shut('#sm');\n$('#rs').onclic",
-"k=()=>loadSubs();\n$('#bk').onclick=async()=>{const b=$('#bk');if(b.disabled)return;b.disab",
-"led=true;b.textContent='Backing up...';\n  try{const out={app:'mythix-lists',made:new Date(",
-").toISOString(),lists:{},users:[],submissions:[],approved:[]};\n  const r0=await api('backu",
-"p?pre=lists');if(!r0.items)throw 0;r0.items.forEach(i=>out.lists[i.k]=i.v);\n  for(const [p",
-"re,dst] of [['u:','users'],['s:','submissions'],['a:','approved']]){let c='';\n    for(let ",
-"n=0;n<500;n++){const r=await api('backup?pre='+encodeURIComponent(pre)+(c?'&c='+encodeURIC",
-"omponent(c):''));if(!r.items)throw 0;out[dst].push(...r.items);if(!r.next)break;c=r.next}}",
-"\n  const u=URL.createObjectURL(new Blob([JSON.stringify(out)],{type:'application/json'})),",
-"a=document.createElement('a');\n  a.href=u;a.download='mythix-backup-'+new Date().toISOStri",
-"ng().slice(0,10)+'.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.r",
-"evokeObjectURL(u),60000);\n  toast('Backup saved: '+out.users.length+' members, '+out.submi",
-"ssions.length+' submissions')}\n  catch(e){toast('Backup failed. Try again.')}\n  b.disabled",
-"=false;b.textContent='Backup'};\n$('#vu').onclick=async()=>{$('#um').classList.add('on');co",
-"nst s=await api('users');if(Array.isArray(s))drawUsers(s)};$('#umc').onclick=()=>shut('#um",
-"');$('#uq').oninput=()=>drawUsers(UL);\nlet TDA='',tpick='';\nconst tmSetup=()=>{const mod=r",
-"ole==='mod';TDA=TDA||$('#td').innerHTML;\n  $('#td').innerHTML=mod?'<option value=\"60000\">1",
-" Minute</option><option value=\"300000\">5 Minutes</option>':TDA;\n  $('#tc').style.display='",
-"none';$('#tu').style.display=mod?'none':'';$('#tsw').style.display=mod?'':'none';$('#tlw')",
-".style.display=mod?'none':'';\n  $('#tq').placeholder=mod?'Type a name (2+ letters), then S",
-"earch':'Search members';tpick='';$('#tsel').textContent='';$('#tr').innerHTML='';$('#tq').",
-"value=''};\n$('#tsb').onclick=async()=>{const q=$('#tq').value.trim(),b=$('#tr');b.innerHTM",
-"L='';if(q.length<2){toast('Type at least 2 letters');return}\n  const r=await api('usearch?",
-"q='+encodeURIComponent(q));if(!Array.isArray(r)){toast(r.error||'Search failed');return}\n ",
-" if(!r.length){b.append(el('p','','No members found.'));return}\n  r.forEach(x=>{const bt=e",
-"l('button','',x.d);bt.style.margin='0 6px 6px 0';bt.onclick=()=>{tpick=x.d;$('#tsel').text",
-"Content='Selected: '+x.d};b.append(bt)})};\n$('#tq').onkeydown=e=>{if(e.key==='Enter'&&role",
-"==='mod')$('#tsb').click()};\n$('#vt').onclick=async()=>{$('#tm').classList.add('on');tmSet",
-"up();if(role!=='owner')return;const s=await api('users');if(Array.isArray(s)){TU=s;fillUse",
-"rs();drawTimeouts(tact(s))}};$('#tmc').onclick=()=>shut('#tm');$('#tq').oninput=fillUsers;",
-"$('#tbl').onclick=()=>$('#lo').click();\n$('#td').onchange=()=>{$('#tc').style.display=$('#",
-"td').value==='c'?'flex':'none'};\n$('#tgo').onclick=async()=>{const name=role==='mod'?tpick",
-":$('#tu').value;if(!name){toast(role==='mod'?'Search for a member and tap their name first",
-"':'Pick a member first');return}\n  const ms=$('#td').value==='c'?Math.round(Number($('#tn'",
-").value)*Number($('#tt').value)):Number($('#td').value);\n  if(!ms||(ms!==-1&&ms<60000)){to",
-"ast('Enter a custom time of at least 1 minute');return}\n  if(await act({action:'timeout',n",
-"ame,ms})){toast(name+(ms===-1?' was banned':' was timed out'));if(role==='mod')tmSetup()}}",
-";\n$('#va').onclick=async()=>{$('#am').classList.add('on');const s=await api('approved');if",
-"(Array.isArray(s))drawApproved(s)};$('#amc').onclick=()=>shut('#am');\n$('#vm').onclick=asy",
-"nc()=>{$('#mm').classList.add('on');const s=await api('users');if(Array.isArray(s))drawMod",
-"s(s)};$('#mmc').onclick=()=>shut('#mm');$('#mq').oninput=()=>drawMods(ML);\nasync function ",
-"loadSubs(){const s=await api('submissions');if(Array.isArray(s))drawSubs(s)}\nconst sure=(b",
+" if(r.error){toast(r.error);return}\n  L=r;LH=r.h||{};gate();render()}\nconst fmtT=ms=>{let ",
+"s=Math.max(0,Math.ceil(ms/1000));const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s",
+"/3600);s%=3600;const m=Math.floor(s/60);s%=60;return(d?d+'d ':'')+(h||d?h+'h ':'')+(m||h||",
+"d?m+'m ':'')+s+'s'};\nfunction banTick(){clearInterval(bti);if(!banUntil)return;const upd=(",
+")=>{if(banUntil===-1){$('#tbh').textContent='Banned';$('#tbt').textContent='You have been ",
+"permanently banned from this site.';return}const left=banUntil-Date.now();if(left<=0){clea",
+"rInterval(bti);banUntil=0;load();return}$('#tbh').textContent='Timed out';$('#tbt').textCo",
+"ntent='You are timed out. Time left: '+fmtT(left)};upd();if(banUntil!==-1)bti=setInterval(",
+"upd,1000)}\nfunction gate(){const need=!(role||visOK);if(!need)$('#ae').textContent='';$('#",
+"gt').classList.toggle('on',need&&!banUntil);$('#tb').classList.toggle('on',!!banUntil);ban",
+"Tick();$('main').classList.toggle('lock',need);$('#lo').hidden=!(role||visOK);$('#who').te",
+"xtContent=role==='owner'?'Owner':role==='mod'?'\ud83d\udee1\ufe0f '+visName+' (mod)':(visOK?'\ud83d\udc64 '+visName:'",
+"')}\nasync function copyText(t,label){\n  try{await navigator.clipboard.writeText(t);toast('",
+"Copied '+label);return}catch(e){}\n  try{const a=document.createElement('textarea');a.value",
+"=t;a.style.cssText='position:fixed;top:0;left:0;opacity:0';document.body.append(a);a.focus",
+"();a.select();a.setSelectionRange(0,t.length);const ok=document.execCommand('copy');a.remo",
+"ve();toast(ok?'Copied '+label:\"Couldn't copy. Press and hold the text instead.\")}catch(e){",
+"toast(\"Couldn't copy\")}\n}\nfunction render(){\n  const box=$('#list');box.innerHTML='';\n  co",
+"nst arr=L[cur]||[],map=new Map(arr.map(e=>[e.pos,e]));let items;\n  if(q){const s=q.toLower",
+"Case();items=arr.filter(e=>(e.name+e.id+e.creator).toLowerCase().includes(s)).map(e=>e.pos",
+");$('#pager').hidden=true}\n  else{$('#pager').hidden=false;const a=pg*PER+1;items=Array.fr",
+"om({length:Math.min(PER,MAX-pg*PER)},(_,i)=>a+i);$('#pi').textContent=a+'\u2013'+(a+items.lengt",
+"h-1)+' of '+MAX}\n  if(q&&!items.length)box.append(el('p','','No matches.'));\n  for(const n",
+" of items){\n    const e=map.get(n),r=el('div','row'+(e?'':' e'));r.append(el('b','','#'+n)",
+");\n    const i=el('div','i');\n    if(e){i.append(el('div','',e.name));i.append(el('small',",
+"'','ID '+e.id+' \u00b7 by '+(e.creator||'?')))}else i.append(el('small','','empty slot'));\n    ",
+"r.append(i);\n    if(e){const c=el('div');c.style.cssText='display:flex;gap:6px;flex-basis:",
+"100%;padding-left:82px;flex-wrap:wrap';\n      [['Copy ID',e.id,'ID'],['Copy name',e.name,'",
+"name'],['Copy creator',e.creator,'creator']].forEach(([t,v,l])=>{if(!v)return;const b=el('",
+"button','',t);b.style.cssText='padding:5px 11px;font-size:13px;color:var(--mu)';b.onclick=",
+"()=>copyText(v,l);c.append(b)});\n      if(e.id){const cb=el('button','','\ud83d\udcac Comment');cb.st",
+"yle.cssText='padding:5px 11px;font-size:13px;color:var(--ac)';cb.onclick=()=>openC(e);c.ap",
+"pend(cb)}\n      r.append(c)}\n    if(role==='owner'){const g=el('div');g.style.cssText='dis",
+"play:flex;gap:6px;flex-basis:100%;padding-left:82px';\n      const mk=(t,fn,ti)=>{const b=e",
+"l('button','',t);b.title=ti||'';b.style.padding='6px 14px';b.onclick=()=>fn(b);g.append(b)",
+"};\n      if(e){mk('\u25b2',()=>n>1&&act({action:'move',list:cur,from:n,to:n-1}),'Swap with leve",
+"l above');mk('\u25bc',()=>n<MAX&&act({action:'move',list:cur,from:n,to:n+1}),'Swap with level b",
+"elow');mk('\u21e7',()=>n>1&&act({action:'pull',list:cur,pos:n}),'Pull up (levels under it come ",
+"with it)');mk('\u21e9',()=>act({action:'push',list:cur,pos:n}),'Push down (levels under it get ",
+"pushed down too)')}\n      mk('\u270e',()=>edit(n,e));\n      if(e)mk('\u2715',b=>{if(b.dataset.a)act(",
+"{action:'remove',list:cur,pos:n});else{b.dataset.a=1;b.textContent='Sure?';setTimeout(()=>",
+"{delete b.dataset.a;b.textContent='\u2715'},3000)}});\n      r.append(g)}\n    box.append(r);\n  }",
+"\n}\ndocument.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{cur=b.dataset.l;pg=",
+"0;document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));ren",
+"der();syncNow()});\n$('#q').oninput=e=>{q=e.target.value.trim();render()};\n$('#pv').onclick",
+"=()=>{if(pg>0){pg--;render()}};\n$('#nx').onclick=()=>{if((pg+1)*PER<MAX){pg++;render()}};\n",
+"\nfunction showAdmin(){const o=role==='owner',m=o||role==='mod';$('#lg').hidden=m;$('#vs').",
+"hidden=!m;$('#va').hidden=!o;$('#bk').hidden=!o;$('#vm').hidden=!o;$('#vu').hidden=!o;$('#",
+"vt').hidden=!m;$('#lo').hidden=!(m||visOK);render()}\n$('#lg').onclick=()=>{$('#lv').classL",
+"ist.add('on');$('#lp').value='';$('#lp').focus()};\n$('#lc').onclick=()=>$('#lv').classList",
+".remove('on');\n$('#lgo').onclick=async()=>{const p=$('#lp').value;if(!p)return;pw=p;usr=''",
+";const r=await api('login',{method:'POST'});\n  if(r.ok){role=r.role;try{sessionStorage.set",
+"Item('pw',pw);sessionStorage.setItem('usr',usr)}catch(e){}shut('#lv');showAdmin();load();t",
+"oast('Logged in as '+r.name)}else{pw='';usr='';toast(r.error||'Login failed')}};\n$('#lp').",
+"onkeydown=e=>{if(e.key==='Enter')$('#lgo').click()};\n$('#lo').onclick=()=>{pw='';usr='';ro",
+"le='';sess='';try{sessionStorage.removeItem('pw');sessionStorage.removeItem('usr');localSt",
+"orage.removeItem('sess')}catch(e){}showAdmin();load()};\nasync function act(b){const r=awai",
+"t post('admin',b);if(r.error){toast(r.error);return false}if(r.list){L[b.list]=r.list;quie",
+"t[b.list]=Date.now()+45000;if(r.h)LH[b.list]=r.h;render()}if(r.subs)drawSubs(r.subs);if(r.",
+"approved)drawApproved(r.approved);if(r.mods)drawMods(r.mods);if(r.users)drawUsers(r.users)",
+";if(r.timeouts)drawTimeouts(r.timeouts);if(r.removed){SUBS=SUBS.filter(x=>x.id!==r.removed",
+");drawSubs(SUBS)}if(r.removedA){ASUBS=ASUBS.filter(x=>x.id!==r.removedA);drawApproved(ASUB",
+"S)}return true}\nconst shut=i=>$(i).classList.remove('on');\n$('#bs').onclick=async()=>{if(a",
+"wait act({action:'set',list:ecur,pos:$('#sp').value,id:$('#sid').value,name:$('#sn').value",
+",creator:$('#sc').value}))shut('#ed')};\nlet rc=0;$('#br').onclick=async()=>{const b=$('#br",
+"');if(!rc){rc=1;b.textContent='Tap again to confirm';setTimeout(()=>{rc=0;b.textContent='R",
+"emove'},3000);return}rc=0;b.textContent='Remove';if(await act({action:'remove',list:ecur,p",
+"os:$('#sp').value}))shut('#ed')};\n$('#bm').onclick=async()=>{if(!efrom){toast('Open a fill",
+"ed slot to move it');return}if(await act({action:'move',list:ecur,from:efrom,to:$('#mt').v",
+"alue}))shut('#ed')};\n$('#ec').onclick=()=>shut('#ed');\n$('#sbtn').onclick=()=>$('#fm').cla",
+"ssList.add('on');$('#fc').onclick=()=>shut('#fm');\n$('#vs').onclick=()=>{$('#sm').classLis",
+"t.add('on');loadSubs()};$('#smc').onclick=()=>shut('#sm');\n$('#rs').onclick=()=>loadSubs(1",
+");\n$('#bk').onclick=async()=>{const b=$('#bk');if(b.disabled)return;b.disabled=true;b.text",
+"Content='Backing up...';\n  try{const out={app:'mythix-lists',made:new Date().toISOString()",
+",lists:{},users:[],submissions:[],approved:[]};\n  const r0=await api('backup?pre=lists');i",
+"f(!r0.items)throw 0;r0.items.forEach(i=>out.lists[i.k]=i.v);\n  for(const [pre,dst] of [['u",
+":','users'],['s:','submissions'],['a:','approved']]){let c='';\n    for(let n=0;n<500;n++){",
+"const r=await api('backup?pre='+encodeURIComponent(pre)+(c?'&c='+encodeURIComponent(c):'')",
+");if(!r.items)throw 0;out[dst].push(...r.items);if(!r.next)break;c=r.next}}\n  const u=URL.",
+"createObjectURL(new Blob([JSON.stringify(out)],{type:'application/json'})),a=document.crea",
+"teElement('a');\n  a.href=u;a.download='mythix-backup-'+new Date().toISOString().slice(0,10",
+")+'.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(",
+"u),60000);\n  toast('Backup saved: '+out.users.length+' members, '+out.submissions.length+'",
+" submissions')}\n  catch(e){toast('Backup failed. Try again.')}\n  b.disabled=false;b.textCo",
+"ntent='Backup'};\n$('#vu').onclick=async()=>{$('#um').classList.add('on');const s=await api",
+"('users');if(Array.isArray(s))drawUsers(s)};$('#umc').onclick=()=>shut('#um');$('#uq').oni",
+"nput=()=>drawUsers(UL);\nlet TDA='',tpick='';\nconst tmSetup=()=>{const mod=role==='mod';TDA",
+"=TDA||$('#td').innerHTML;\n  $('#td').innerHTML=mod?'<option value=\"60000\">1 Minute</option",
+"><option value=\"300000\">5 Minutes</option>':TDA;\n  $('#tc').style.display='none';$('#tu').",
+"style.display=mod?'none':'';$('#tsw').style.display=mod?'':'none';$('#tlw').style.display=",
+"mod?'none':'';\n  $('#tq').placeholder=mod?'Type a name (2+ letters), then Search':'Search ",
+"members';tpick='';$('#tsel').textContent='';$('#tr').innerHTML='';$('#tq').value=''};\n$('#",
+"tsb').onclick=async()=>{const q=$('#tq').value.trim(),b=$('#tr');b.innerHTML='';if(q.lengt",
+"h<2){toast('Type at least 2 letters');return}\n  const r=await api('usearch?q='+encodeURICo",
+"mponent(q));if(!Array.isArray(r)){toast(r.error||'Search failed');return}\n  if(!r.length){",
+"b.append(el('p','','No members found.'));return}\n  r.forEach(x=>{const bt=el('button','',x",
+".d);bt.style.margin='0 6px 6px 0';bt.onclick=()=>{tpick=x.d;$('#tsel').textContent='Select",
+"ed: '+x.d};b.append(bt)})};\n$('#tq').onkeydown=e=>{if(e.key==='Enter'&&role==='mod')$('#ts",
+"b').click()};\n$('#vt').onclick=async()=>{$('#tm').classList.add('on');tmSetup();if(role!==",
+"'owner')return;const s=await api('users');if(Array.isArray(s)){TU=s;fillUsers();drawTimeou",
+"ts(tact(s))}};$('#tmc').onclick=()=>shut('#tm');$('#tq').oninput=fillUsers;$('#tbl').oncli",
+"ck=()=>$('#lo').click();\n$('#td').onchange=()=>{$('#tc').style.display=$('#td').value==='c",
+"'?'flex':'none'};\n$('#tgo').onclick=async()=>{const name=role==='mod'?tpick:$('#tu').value",
+";if(!name){toast(role==='mod'?'Search for a member and tap their name first':'Pick a membe",
+"r first');return}\n  const ms=$('#td').value==='c'?Math.round(Number($('#tn').value)*Number",
+"($('#tt').value)):Number($('#td').value);\n  if(!ms||(ms!==-1&&ms<60000)){toast('Enter a cu",
+"stom time of at least 1 minute');return}\n  if(await act({action:'timeout',name,ms})){toast",
+"(name+(ms===-1?' was banned':' was timed out'));if(role==='mod')tmSetup()}};\n$('#va').oncl",
+"ick=async()=>{$('#am').classList.add('on');const s=await api('approved');if(Array.isArray(",
+"s))drawApproved(s)};$('#amc').onclick=()=>shut('#am');\n$('#vm').onclick=async()=>{$('#mm')",
+".classList.add('on');const s=await api('users');if(Array.isArray(s))drawMods(s)};$('#mmc')",
+".onclick=()=>shut('#mm');$('#mq').oninput=()=>drawMods(ML);\nasync function loadSubs(f){con",
+"st s=await api('submissions'+(f?'?f=1':''));if(Array.isArray(s))drawSubs(s)}\nconst sure=(b",
 ",fn)=>{if(b.dataset.a)fn();else{const t=b.textContent;b.dataset.a=1;b.textContent='Sure?';",
 "setTimeout(()=>{delete b.dataset.a;b.textContent=t},3000)}};\nfunction card(x,note){const d",
 "=el('div','sub'),all=[];\n  const cbtn=(v,k,t)=>{const b=el('button','',t||'Copy');b.style.",
@@ -295,7 +298,8 @@ const HTML=[
 "del);b.append(d)});\n}\nlet TU=[];const tact=t=>t.filter(x=>x.b&&(x.b===-1||x.b>Date.now()))",
 ";\nfunction fillUsers(){const q=$('#tq').value.trim().toLowerCase(),s=$('#tu'),cur=s.value;",
 "s.innerHTML='';TU.filter(x=>x.d.toLowerCase().includes(q)).forEach(x=>{const o=el('option'",
-",'',x.d);o.value=x.d;s.append(o)});if(cur)s.value=cur}\nfunction drawTimeouts(t){const b=$(","'#tl');b.innerHTML='';if(!t.length){b.append(el('p','','Nobody is timed out right now.'));",
+",'',x.d);o.value=x.d;s.append(o)});if(cur)s.value=cur}\nfunction drawTimeouts(t){const b=$(",
+"'#tl');b.innerHTML='';if(!t.length){b.append(el('p','','Nobody is timed out right now.'));",
 "return}\n  t.forEach(x=>{const r=el('div','sub',x.d+' \u2014 '+(x.b===-1?'Permanent ban':'until ",
 "'+new Date(x.b).toLocaleString())+' ');const d=el('button','','Remove');d.onclick=()=>act(",
 "{action:'untimeout',name:x.d});r.append(d);b.append(r)})}\nlet UL=[];\nfunction drawUsers(u)",
@@ -327,50 +331,77 @@ const HTML=[
 "{list:$('#f0').value,q1:$('#f1').value,q2:$('#f2').value,q3:$('#f3').value,q4:$('#f4').val",
 "ue,q5:$('#f5').value});\n    if(r.ok){$('#sf').reset();shut('#fm');$('#ov').classList.add('",
 "on')}else toast(r.error||'Something went wrong');\n  }catch(err){toast('Could not submit, t",
-"ry again')}\n  btn.disabled=false;\n};\nlet CK=null;\nconst drawC=a=>{const b=$('#cl');b.inner",
-"HTML='';if(!a.length){b.append(el('p','','No comments yet. Be the first!'));return}\n  a.fo",
-"rEach(x=>{const d=el('div','sub');d.append(el('b','',x.u+' '));d.append(el('small','',new ",
+"ry again')}\n  btn.disabled=false;\n};\nlet LH={},quiet={},pn=0,pt=null,pbusy=false,lastAct=D",
+"ate.now();\nconst vis=()=>document.visibilityState==='visible';\nasync function syncNow(){\n ",
+" if(pbusy||!(role||visOK)||banUntil||!vis())return;pbusy=true;\n  try{const l=cur,r=await a",
+"pi('sync?l='+l+'&h='+encodeURIComponent(LH[l]||''));\n    if(r.net)return;\n    if(r.until||",
+"r.auth){load();return}\n    if(r.error)return;\n    if(role!=='owner'&&typeof r.mod==='boole",
+"an'&&r.mod!==(role==='mod')){load();return}\n    if(r.same){pn++;return}\n    if(r.list&&!(q",
+"uiet[l]>Date.now())){L[l]=r.list;LH[l]=r.h;pn=0;render()}\n  }finally{pbusy=false}}\nfunctio",
+"n sched(){clearTimeout(pt);pt=setTimeout(async()=>{if(Date.now()-lastAct<300000)await sync",
+"Now();sched()},Math.min(60000,20000*(1+Math.floor(pn/3))))}\nconst bump=()=>{const n=Date.n",
+"ow(),was=n-lastAct>300000;lastAct=n;if(was){pn=0;syncNow();sched()}};\n['click','keydown','",
+"touchstart'].forEach(ev=>addEventListener(ev,bump,{passive:true}));\ndocument.addEventListe",
+"ner('visibilitychange',()=>{if(vis()){pn=0;lastAct=Date.now();syncNow();sched()}});\nlet CK",
+"=null,CH='',cpt=null,cn=0,mine=new Map(),gone=new Map(),cShown='';\nconst drawC=a=>{const b",
+"=$('#cl');b.innerHTML='';if(!a.length){b.append(el('p','','No comments yet. Be the first!'",
+"));return}\n  a.forEach(x=>{const d=el('div','sub');d.append(el('b','',x.r==='owner'?'':x.u",
+"+' '));if(x.r){const g=el('span','',x.r==='owner'?'\ud83d\udc51 Owner':'\ud83d\udc8e Mod');g.style.cssText='back",
+"ground:'+(x.r==='owner'?'#ff0033':'#b14bff')+';color:#fff;font-size:12px;font-weight:700;b",
+"order-radius:8px;padding:2px 8px;margin-right:6px';d.append(g)}d.append(el('small','',new ",
 "Date(x.t).toLocaleString()));const t=el('div','',x.x);t.style.overflowWrap='anywhere';d.ap",
 "pend(t);\n    if(role==='owner'||role==='mod'||(visName&&x.u===visName)){const del=el('butt",
 "on','','Delete');del.style.cssText='padding:3px 10px;font-size:12px;margin-top:4px';del.on",
 "click=()=>sure(del,async()=>{const r=await post('cdel',{list:CK.l,id:CK.i,cid:x.i});if(r.c",
-"omments)drawC(r.comments);else toast(r.error||'Could not delete')});d.append(del)}\n    b.a",
-"ppend(d)})};\nconst openC=async e=>{CK={l:cur,i:e.id};$('#ch').textContent='Comments \u00b7 '+e.",
-"name;$('#ct').value='';$('#cl').innerHTML='';$('#cm').classList.add('on');const r=await ap",
-"i('comments?list='+cur+'&id='+encodeURIComponent(e.id));if(r.comments)drawC(r.comments);el",
-"se toast(r.error||'Could not load comments')};\n$('#cs').onclick=async()=>{const t=$('#ct')",
-".value.trim();if(!t||!CK)return;const b=$('#cs');b.disabled=true;const r=await post('comme",
-"nt',{list:CK.l,id:CK.i,text:t});b.disabled=false;if(r.comments){$('#ct').value='';drawC(r.",
-"comments)}else toast(r.error||'Could not post')};\n$('#cc').onclick=()=>shut('#cm');\n$('#ok",
-"').onclick=()=>$('#ov').classList.remove('on');\nlet mode='login',rcCb=null;\nconst setMode=",
-"m=>{mode=m;const l=m==='login';$('#gh').textContent=l?'Log in':'Sign up';$('#ab').textCont",
-"ent=l?'Log in':'Sign up';$('#at').textContent=l?'New here? Sign up':'Have an account? Log ",
-"in';$('#ah').textContent=l?'':\"Use the name you're widely known for. You'll get a recovery",
-" code in case you forget your password.\";$('#ae').textContent=''};\nsetMode('login');\n$('#a",
-"t').onclick=e=>{e.preventDefault();setMode(mode==='login'?'signup':'login')};\nconst newCod",
-"e=()=>{const al='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',a=new Uint8Array(16);crypto.getRandomVa",
-"lues(a);return [0,4,8,12].map(i=>[...a.slice(i,i+4)].map(x=>al[x%32]).join('')).join('-')}",
-";\nconst showCode=cb=>{const c=newCode();$('#rcc').textContent=c;rcCb=()=>cb(c);$('#rc').cl",
-"assList.add('on')};\n$('#rcp').onclick=async()=>{try{await navigator.clipboard.writeText($(",
-"'#rcc').textContent);toast('Copied')}catch(e){toast('Select the code and copy it')}};\n$('#",
-"rcd').onclick=()=>{shut('#rc');rcCb&&rcCb()};\nconst enter=async r=>{sess=r.token;try{local",
-"Storage.setItem('sess',sess)}catch(e){}await load();toast('Welcome, '+r.name)};\n$('#ab').o",
-"nclick=async()=>{const n=$('#an').value.trim(),p=$('#ap').value;$('#ae').textContent='';\n ",
-" if(!n||!p){$('#ae').textContent='Enter your name and password';return}\n  if(mode==='login",
-"'){const r=await post('vlogin',{name:n,password:p});if(r.ok)enter(r);else $('#ae').textCon",
-"tent=r.error||'Something went wrong';return}\n  if(p.length<6){$('#ae').textContent='Passwo",
-"rd needs 6+ characters';return}\n  showCode(async c=>{const r=await post('signup',{name:n,p",
-"assword:p,code:c});if(r.ok)enter(r);else $('#ae').textContent=r.error||'Something went wro",
-"ng'})};\n$('#ap').onkeydown=e=>{if(e.key==='Enter')$('#ab').click()};\n$('#af').onclick=e=>{",
-"e.preventDefault();$('#re').textContent='';$('#rv').classList.add('on')};$('#rbk').onclick",
-"=e=>{e.preventDefault();shut('#rv')};\n$('#rb').onclick=()=>{const n=$('#rn').value.trim(),",
-"k=$('#rk').value.trim(),p=$('#rp').value;$('#re').textContent='';\n  if(!n||!k||p.length<6)",
-"{$('#re').textContent='Fill everything in (password 6+ characters)';return}\n  showCode(asy",
-"nc c=>{const r=await post('recover',{name:n,code:k,newcode:c,password:p});if(r.ok){shut('#",
-"rv');enter(r)}else $('#re').textContent=r.error||'Something went wrong'})};\n$('#gl').oncli",
-"ck=e=>{e.preventDefault();$('#lg').click()};\n(async()=>{if(pw){const r=await api('login',{",
-"method:'POST'});if(r.ok)role=r.role;else{pw='';usr=''}}showAdmin();load()})();\n\n</script><",
-"/body></html>\n"
+"omments){gone.set(x.i,Date.now());mine.delete(x.i);cShown='';showC(r.comments)}else toast(",
+"r.error||'Could not delete')});d.append(del)}\n    b.append(d)})};\nconst cmerge=a=>{const n",
+"=Date.now();for(const[i,v]of mine)if(n-v.at>90000)mine.delete(i);for(const[i,v]of gone)if(",
+"n-v>90000)gone.delete(i);\n  const ids=new Set(a.map(x=>x.i)),o=a.filter(x=>!gone.has(x.i))",
+";for(const[i,v]of mine){if(ids.has(i))mine.delete(i);else if(!gone.has(i))o.push(v.c)}retu",
+"rn o.sort((x,y)=>y.t-x.t)};\nconst showC=a=>{const m=cmerge(a),s=JSON.stringify(m);if(s===c",
+"Shown)return;cShown=s;drawC(m)};\nfunction cpoll(){clearTimeout(cpt);cpt=setTimeout(async()",
+"=>{\n  if(!$('#cm').classList.contains('on'))return;\n  const k=CK;\n  if(vis()&&Date.now()-l",
+"astAct<300000){\n    const r=await api('comments?list='+k.l+'&id='+encodeURIComponent(k.i)+",
+"'&h='+encodeURIComponent(CH));\n    if(CK===k&&$('#cm').classList.contains('on')){\n      if",
+"(r.comments){CH=r.h||'';cn=0;showC(r.comments)}else if(r.same)cn++;else if(r.until||r.auth",
+")load()}}\n  cpoll()},cn>10?15000:6000)}\nconst openC=async e=>{CK={l:cur,i:e.id};CH='';cn=0",
+";mine=new Map();gone=new Map();cShown='';$('#ch').textContent='Comments \u00b7 '+e.name;$('#ct'",
+").value='';$('#cl').innerHTML='';$('#cm').classList.add('on');const r=await api('comments?",
+"list='+cur+'&id='+encodeURIComponent(e.id));if(r.comments){CH=r.h||'';showC(r.comments);cp",
+"oll()}else toast(r.error||'Could not load comments')};\n$('#cs').onclick=async()=>{const t=",
+"$('#ct').value.trim();if(!t||!CK)return;const b=$('#cs');b.disabled=true;const r=await pos",
+"t('comment',{list:CK.l,id:CK.i,text:t});b.disabled=false;if(r.comments){$('#ct').value='';",
+"const c0=r.comments[0];if(c0)mine.set(c0.i,{c:c0,at:Date.now()});CH='';cShown='';showC(r.c",
+"omments)}else toast(r.error||'Could not post')};\n$('#cc').onclick=()=>{shut('#cm');clearTi",
+"meout(cpt)};\n$('#ok').onclick=()=>$('#ov').classList.remove('on');\nlet mode='login',rcCb=n",
+"ull;\nconst setMode=m=>{mode=m;const l=m==='login';$('#gh').textContent=l?'Log in':'Sign up",
+"';$('#ab').textContent=l?'Log in':'Sign up';$('#at').textContent=l?'New here? Sign up':'Ha",
+"ve an account? Log in';$('#ah').textContent=l?'':\"Use the name you're widely known for. Yo",
+"u'll get a recovery code in case you forget your password.\";$('#ae').textContent=''};\nsetM",
+"ode('login');\n$('#at').onclick=e=>{e.preventDefault();setMode(mode==='login'?'signup':'log",
+"in')};\nconst newCode=()=>{const al='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',a=new Uint8Array(16)",
+";crypto.getRandomValues(a);return [0,4,8,12].map(i=>[...a.slice(i,i+4)].map(x=>al[x%32]).j",
+"oin('')).join('-')};\nconst showCode=cb=>{const c=newCode();$('#rcc').textContent=c;rcCb=()",
+"=>cb(c);$('#rc').classList.add('on')};\n$('#rcp').onclick=async()=>{try{await navigator.cli",
+"pboard.writeText($('#rcc').textContent);toast('Copied')}catch(e){toast('Select the code an",
+"d copy it')}};\n$('#rcd').onclick=()=>{shut('#rc');rcCb&&rcCb()};\nconst enter=async r=>{ses",
+"s=r.token;try{localStorage.setItem('sess',sess)}catch(e){}await load();toast('Welcome, '+r",
+".name)};\n$('#ab').onclick=async()=>{const n=$('#an').value.trim(),p=$('#ap').value;$('#ae'",
+").textContent='';\n  if(!n||!p){$('#ae').textContent='Enter your name and password';return}",
+"\n  if(mode==='login'){const r=await post('vlogin',{name:n,password:p});if(r.ok)enter(r);el",
+"se $('#ae').textContent=r.error||'Something went wrong';return}\n  if(p.length<6){$('#ae').",
+"textContent='Password needs 6+ characters';return}\n  showCode(async c=>{const r=await post",
+"('signup',{name:n,password:p,code:c});if(r.ok)enter(r);else $('#ae').textContent=r.error||",
+"'Something went wrong'})};\n$('#ap').onkeydown=e=>{if(e.key==='Enter')$('#ab').click()};\n$(",
+"'#af').onclick=e=>{e.preventDefault();$('#re').textContent='';$('#rv').classList.add('on')",
+"};$('#rbk').onclick=e=>{e.preventDefault();shut('#rv')};\n$('#rb').onclick=()=>{const n=$('",
+"#rn').value.trim(),k=$('#rk').value.trim(),p=$('#rp').value;$('#re').textContent='';\n  if(",
+"!n||!k||p.length<6){$('#re').textContent='Fill everything in (password 6+ characters)';ret",
+"urn}\n  showCode(async c=>{const r=await post('recover',{name:n,code:k,newcode:c,password:p",
+"});if(r.ok){shut('#rv');enter(r)}else $('#re').textContent=r.error||'Something went wrong'",
+"})};\n$('#gl').onclick=e=>{e.preventDefault();$('#lg').click()};\n(async()=>{if(pw){const r=",
+"await api('login',{method:'POST'});if(r.ok)role=r.role;else{pw='';usr=''}}showAdmin();load",
+"();sched()})();\n\n</script></body></html>\n"
 ].join('');
 
 const J=(d,s=200)=>new Response(JSON.stringify(d),{status:s,headers:{'content-type':'application/json'}});
@@ -378,13 +409,18 @@ const MAX=10000,LISTS=['decor','difficulty','layout'];
 const cut=(v,n)=>String(v==null?'':v).slice(0,n);
 const hex=async s=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(x=>x.toString(16).padStart(2,'0')).join('');
 const kdf=async(s,salt)=>{const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(s),'PBKDF2',false,['deriveBits']);return [...new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:new TextEncoder().encode(salt),iterations:10000},k,256))].map(x=>x.toString(16).padStart(2,'0')).join('')};
+const MC=new Map(),SC=new Map(),RL=new Map(),LT=30000,CT=5000,BT=15000,SCT=20000;
+const hsh=s=>{let h=5381;for(let i=0;i<s.length;i++)h=(h*33^s.charCodeAt(i))>>>0;return h.toString(36)+'.'+s.length.toString(36)};
+const lim=(k,ms,max=1)=>{const n=Date.now(),a=(RL.get(k)||[]).filter(t=>n-t<ms);if(a.length>=max){RL.set(k,a);return true}a.push(n);RL.set(k,a);if(RL.size>3000)RL.clear();return false};
 export default{async fetch(req,env){
   const p=new URL(req.url).pathname;
-  if(!p.startsWith('/api/'))return new Response(HTML,{headers:{'content-type':'text/html;charset=utf-8','cache-control':'no-cache'}});
+  if(!p.startsWith('/api/'))return new Response(HTML,{headers:{'content-type':'text/html;charset=utf-8','cache-control':'public, max-age=60'}});
   const kv=env.LISTS;
   if(!kv)return J({error:'KV binding LISTS is not set up'},500);
   const get=async(k,d='[]')=>JSON.parse(await kv.get(k)||d);
-  const put=(k,v)=>kv.put(k,JSON.stringify(v));
+  const ttl=k=>k.startsWith('c:')?CT:LT;
+  const rd=async k=>{const c=MC.get(k);if(c&&c.x>Date.now())return c;const raw=await kv.get(k)||'[]';const e={v:JSON.parse(raw),h:hsh(raw),x:Date.now()+ttl(k)};MC.set(k,e);if(MC.size>400){const n=Date.now();for(const[q,z]of MC)if(z.x<n)MC.delete(q);if(MC.size>400)MC.clear()}return e};
+  const put=async(k,v)=>{const s=JSON.stringify(v);await kv.put(k,s);MC.set(k,{v,h:hsh(s),x:Date.now()+ttl(k)})};
   const pw=req.headers.get('x-pw')||'';
   let me=null;
   if(env.OWNER_PASSWORD&&pw===env.OWNER_PASSWORD)me={role:'owner',name:'Owner'};
@@ -400,10 +436,12 @@ export default{async fetch(req,env){
   const fail=async k=>kv.put('f:'+k,String(await tries(k)+1),{expirationTtl:900});
   const listUsers=async()=>{const out=[];let cursor;do{const r=await kv.list({prefix:'u:',cursor});for(const x of r.keys)if(x.metadata)out.push(x.metadata);cursor=r.list_complete?null:r.cursor}while(cursor&&out.length<5000);return out.sort((a,b)=>(b.c||0)-(a.c||0))};
   const upd=(l,k,m)=>{l=l.filter(x=>x.d.toLowerCase()!==k);if(m)l.push(m);return l};
-  const listBox=async pre=>{const r=await kv.list({prefix:pre,limit:100});return(await Promise.all(r.keys.map(x=>kv.get(x.name,'json')))).filter(Boolean)};
+  const dropBox=pre=>MC.delete('box:'+pre);
+  const listBox=async pre=>{const c=MC.get('box:'+pre);if(c&&c.x>Date.now())return c.v;const r=await kv.list({prefix:pre,limit:100});const v=(await Promise.all(r.keys.map(x=>kv.get(x.name,'json')))).filter(Boolean);MC.set('box:'+pre,{v,x:Date.now()+BT});return v};
   let vname=null,vban=0,vmod=false;
   const stk=req.headers.get('x-sess')||'';
-  if(stk.length>20){const sr=await kv.get('t:'+await hex(stk));if(sr){const ur=await kv.get('u:'+JSON.parse(sr).u);if(ur){const a=JSON.parse(ur);if(a.b&&(a.b===-1||a.b>Date.now()))vban=a.b;else{vname=a.d;vmod=!!a.m}}}}
+  if(stk.length>20){let c=SC.get(stk);if(!c||c.x<Date.now()){c=null;const sr=await kv.get('t:'+await hex(stk));if(sr){const ur=await kv.get('u:'+JSON.parse(sr).u);if(ur){const a=JSON.parse(ur);c={a:a.b||0,d:a.d,m:!!a.m,x:Date.now()+SCT};SC.set(stk,c);if(SC.size>1000)SC.clear()}}}
+    if(c){if(c.a&&(c.a===-1||c.a>Date.now()))vban=c.a;else{vname=c.d;vmod=c.m}}}
   if(!me&&vmod)me={role:'mod',name:vname};
   if(p==='/api/me')return vname?J({ok:true,name:vname,mod:vmod}):vban?J({error:'Timed out',until:vban},403):J({error:'Not logged in'},401);
   if(['/api/signup','/api/vlogin','/api/recover'].includes(p)&&req.method==='POST'){
@@ -415,6 +453,7 @@ export default{async fetch(req,env){
       const code=nc(b.code);if(code.length<12)return J({error:'Bad recovery code'},400);
       if(['owner','admin','mod','moderator','mythix','mythixgmd'].includes(k)||await kv.get('u:'+k))return J({error:'That name is taken'},409);
       const s=crypto.randomUUID(),rs=crypto.randomUUID();
+      if(lim('su:'+(req.headers.get('cf-connecting-ip')||'x'),600000,10))return J({error:'Too many sign-ups from your network. Try again in a few minutes.'},429);
       const now=Date.now();await kv.put('u:'+k,JSON.stringify({d,c:now,s,h:await kdf(pwd,s),rs,r:await hex(rs+code)}),{metadata:{d,c:now,l:now}});
       return J({ok:true,name:d,token:await sess(k)});
     }
@@ -437,15 +476,25 @@ export default{async fetch(req,env){
   }
   if(p==='/api/lists'){
     if(!me&&!vname)return vban?J({error:'Timed out',until:vban},403):J({error:'Log in with a username first',auth:1},401);
-    return J({decor:await get('decor'),difficulty:await get('difficulty'),layout:await get('layout'),name:vname,mod:vmod});
+    const E=await Promise.all(LISTS.map(rd)),o={name:vname,mod:vmod,h:{}};LISTS.forEach((k,i)=>{o[k]=E[i].v;o.h[k]=E[i].h});
+    return J(o);
+  }
+  if(p==='/api/sync'){
+    if(!me&&!vname)return vban?J({error:'Timed out',until:vban},403):J({error:'Log in with a username first',auth:1},401);
+    const sp=new URL(req.url).searchParams,l=sp.get('l');
+    if(!LISTS.includes(l))return J({error:'bad list'},400);
+    const e=await rd(l);
+    return sp.get('h')===e.h?J({same:1,mod:vmod}):J({list:e.v,h:e.h,mod:vmod});
   }
   if(p==='/api/login')return me&&me.role==='owner'?J({ok:true,role:me.role,name:me.name}):J({error:'Wrong login'},401);
   if(p==='/api/submit'&&req.method==='POST'){
     if(!me&&!vname)return J({error:'Log in first'},401);
     let b;try{b=await req.json()}catch(e){return J({error:'bad'},400)}
+    if(!(me&&me.role==='owner')&&lim('sb:'+(me?me.name:vname),30000))return J({error:'Slow down. Wait a few seconds.'},429);
     const list=cut(b.list,20);if(!LISTS.includes(list))return J({error:'bad list'},400);
     const t=Date.now(),id=String(9999999999999-t).padStart(13,'0')+'-'+crypto.randomUUID().slice(0,8);
     await kv.put('s:'+id,JSON.stringify({id,t,user:me?me.name:vname,list,q1:cut(b.q1,300),q2:cut(b.q2,300),q3:cut(b.q3,300),q4:cut(b.q4,200),q5:cut(b.q5,100)}));
+    dropBox('s:');
     return J({ok:true});
   }
   if(p==='/api/comments'||p==='/api/comment'||p==='/api/cdel'){
@@ -454,9 +503,10 @@ export default{async fetch(req,env){
     if(req.method==='POST'){try{b=await req.json()}catch(e){return J({error:'bad'},400)}}
     const lst=cut(p==='/api/comments'?sp.get('list'):b.list,20),lid=cut(p==='/api/comments'?sp.get('id'):b.id,20).trim();
     if(!LISTS.includes(lst)||!lid)return J({error:'bad level'},400);
-    const ck='c:'+lst+':'+lid;let ca=await get(ck);
-    if(p==='/api/comments')return J({comments:ca});
+    const ck='c:'+lst+':'+lid;
+    if(p==='/api/comments'){const E=await rd(ck);return sp.get('h')===E.h?J({same:1}):J({comments:E.v,h:E.h})}
     if(req.method!=='POST')return J({error:'bad'},400);
+    let ca=await get(ck);
     if(p==='/api/cdel'){
       const x=ca.find(c=>c.i===cut(b.cid,60));
       if(!x)return J({comments:ca});
@@ -466,12 +516,13 @@ export default{async fetch(req,env){
     const text=cut(b.text,300).trim();if(!text)return J({error:'Write something first'},400);
     const who=me?me.name:vname;
     if(ca.some(c=>c.u===who&&Date.now()-c.t<10000))return J({error:'Slow down. Wait a few seconds.'},429);
-    if(!(await get(lst)).some(e=>e.id===lid))return J({error:'Level not found'},404);
-    ca.unshift({i:Date.now()+'-'+crypto.randomUUID().slice(0,6),u:who,t:Date.now(),x:text});
+    if(!(await rd(lst)).v.some(e=>e.id===lid))return J({error:'Level not found'},404);
+    if(!(me&&me.role==='owner')&&lim('cm:'+who,15000))return J({error:'Slow down. Wait a few seconds.'},429);
+    ca.unshift({i:Date.now()+'-'+crypto.randomUUID().slice(0,6),u:who,t:Date.now(),x:text,...(me?{r:me.role}:{})});
     ca=ca.slice(0,100);await put(ck,ca);return J({comments:ca});
   }
   if(!me)return J({error:'Not allowed'},401);
-  if(p==='/api/submissions')return J(await listBox('s:'));
+  if(p==='/api/submissions'){if(new URL(req.url).searchParams.get('f'))dropBox('s:');return J(await listBox('s:'))}
   if(p==='/api/usearch'){
     const q=(new URL(req.url).searchParams.get('q')||'').trim().replace(/\s+/g,' ').toLowerCase();
     if(q.length<2)return J([]);
@@ -486,7 +537,7 @@ export default{async fetch(req,env){
       const id=cut(b.id,60),x=await kv.get('s:'+id,'json');
       if(!x)return J({error:'Already handled'},404);
       await kv.put('a:'+id,JSON.stringify({...x,by:me.name,at:Date.now()}));
-      await kv.delete('s:'+id);
+      await kv.delete('s:'+id);dropBox('s:');dropBox('a:');
       return J({removed:id});
     }
     if(b.action==='timeout'&&me.role==='mod'){
@@ -498,7 +549,7 @@ export default{async fetch(req,env){
       if(u.m)return J({error:"Mods can't time out other mods"},403);
       if(u.b&&(u.b===-1||u.b>Date.now()))return J({error:'Already timed out'},409);
       u.b=Date.now()+ms;
-      await kv.put('u:'+k,JSON.stringify(u),{metadata:{...metadata,b:u.b}});
+      await kv.put('u:'+k,JSON.stringify(u),{metadata:{...metadata,b:u.b}});SC.clear();
       return J({ok:true});
     }
   }
@@ -525,7 +576,7 @@ export default{async fetch(req,env){
       u.b=ms===-1?-1:Date.now()+ms;
     }else delete u.b;
     const m={...metadata};if(u.b)m.b=u.b;else delete m.b;
-    await kv.put('u:'+k,JSON.stringify(u),{metadata:m});
+    await kv.put('u:'+k,JSON.stringify(u),{metadata:m});SC.clear();
     const now=Date.now();
     return J({timeouts:upd(await listUsers(),k,m).filter(x=>x.b&&(x.b===-1||x.b>now))});
   }
@@ -533,22 +584,22 @@ export default{async fetch(req,env){
     const k=cut(b.name,20).trim().replace(/\s+/g,' ').toLowerCase();
     const{value,metadata}=await kv.getWithMetadata('u:'+k);
     if(!value)return J({error:'No such member'},404);
-    if(b.action==='deluser'){await kv.delete('u:'+k);return J({users:upd(await listUsers(),k,null)})}
+    if(b.action==='deluser'){await kv.delete('u:'+k);SC.clear();return J({users:upd(await listUsers(),k,null)})}
     const pwd=cut(b.password,100);if(pwd.length<6)return J({error:'Password needs 6+ characters'},400);
     const u=JSON.parse(value),s=crypto.randomUUID();
-    await kv.put('u:'+k,JSON.stringify({...u,s,h:await kdf(pwd,s)}),{metadata});
+    await kv.put('u:'+k,JSON.stringify({...u,s,h:await kdf(pwd,s)}),{metadata});SC.clear();
     await kv.delete('f:'+k);
     return J({ok:true});
   }
-  if(b.action==='delsub'){const id=cut(b.id,60);await kv.delete('s:'+id);return J({removed:id})}
-  if(b.action==='delapproved'){const id=cut(b.id,60);await kv.delete('a:'+id);return J({removedA:id})}
+  if(b.action==='delsub'){const id=cut(b.id,60);await kv.delete('s:'+id);dropBox('s:');return J({removed:id})}
+  if(b.action==='delapproved'){const id=cut(b.id,60);await kv.delete('a:'+id);dropBox('a:');return J({removedA:id})}
   if(b.action==='setmod'){
     const k=cut(b.name,20).trim().replace(/\s+/g,' ').toLowerCase();
     const{value,metadata}=await kv.getWithMetadata('u:'+k);
     if(!value)return J({error:'No such member'},404);
     const u=JSON.parse(value),m={...metadata};
     if(b.mod){u.m=1;m.m=1}else{delete u.m;delete m.m}
-    await kv.put('u:'+k,JSON.stringify(u),{metadata:m});
+    await kv.put('u:'+k,JSON.stringify(u),{metadata:m});SC.clear();
     return J({mods:upd(await listUsers(),k,m)});
   }
 
@@ -586,5 +637,5 @@ export default{async fetch(req,env){
   }else return J({error:'bad action'},400);
   a=a.filter(e=>e.pos>=1&&e.pos<=MAX).sort((x,y)=>x.pos-y.pos);
   await put(b.list,a);
-  return J({list:a});
+  return J({list:a,h:MC.get(b.list).h});
 }};
