@@ -28,9 +28,12 @@ export default{async fetch(req,env){
   let me=null;
   if(env.OWNER_PASSWORD&&pw===env.OWNER_PASSWORD)me={role:'owner',name:'Owner'};
   if(p==='/api/maintenance'){
-    const key='maintenance:enabled';
-    if(req.method==='GET')return J({enabled:(await kv.get(key))==='1'});
-    if(req.method==='POST'){if(!me||me.role!=='owner')return J({error:'Owner only'},403);let b;try{b=await req.json()}catch(e){return J({error:'bad'},400)}if(typeof b.enabled!=='boolean')return J({error:'bad'},400);if(b.enabled)await kv.put(key,'1');else await kv.delete(key);return J({ok:true,enabled:b.enabled})}
+    const key='maintenance:enabled',initKey='maintenance:auto-disabled:v2';
+    if(req.method==='GET'){
+      if(await kv.get(initKey)!=='1'){await kv.delete(key);await kv.put(initKey,'1')}
+      return J({enabled:(await kv.get(key))==='1'});
+    }
+    if(req.method==='POST'){if(!me||me.role!=='owner')return J({error:'Owner only'},403);let b;try{b=await req.json()}catch(e){return J({error:'bad'},400)}if(typeof b.enabled!=='boolean')return J({error:'bad'},400);await kv.put(initKey,'1');if(b.enabled)await kv.put(key,'1');else await kv.delete(key);return J({ok:true,enabled:b.enabled})}
     return J({error:'bad method'},405);
   }
   if(pw&&!me){
